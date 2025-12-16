@@ -24,5 +24,21 @@ describe("POST /api/auth/register", () => {
 
   expect(response.statusCode).toBe(400);
 });
+
+  it("should return 400 if email already exists", async () => {
+  await request(app).post("/api/auth/register").send({
+    email: "duplicate@test.com",
+    password: "secret123",
+  });
+
+  const response = await request(app)
+    .post("/api/auth/register")
+    .send({
+      email: "duplicate@test.com",
+      password: "secret123",
+    });
+
+  expect(response.statusCode).toBe(400);
+});
      
 });
