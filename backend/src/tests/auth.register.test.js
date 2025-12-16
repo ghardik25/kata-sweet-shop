@@ -13,4 +13,16 @@ describe("POST /api/auth/register", () => {
 
     expect(response.statusCode).toBe(201);
   });
+
+  it("should return 400 if email is missing", async () => {
+  const response = await request(app)
+    .post("/api/auth/register")
+    .send({
+      name: "Hardik",
+      password: "secret123",
+    });
+
+  expect(response.statusCode).toBe(400);
+});
+     
 });
