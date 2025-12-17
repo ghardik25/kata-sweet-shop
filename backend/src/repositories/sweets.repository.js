@@ -1,3 +1,5 @@
+// In-memory repository used for fast testing and TDD.
+// Will connect to MongoDB without changing services.
 let sweets = [];
 let idCounter = 1;
 
