@@ -1,10 +1,10 @@
 const express = require("express");
-const authRoutes = require("./routes/auth.routes");
+const authController = require("./controllers/auth.controller");
 
 const app = express();
-
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
+app.post("/api/auth/register", authController.register);
+app.post("/api/auth/login", authController.login);
 
 module.exports = app;

@@ -1,15 +1,50 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/user.repository");
 
-const register = async ({ email, password }) => {
-  const existingUser = await userRepository.findByEmail(email);
+const JWT_SECRET = "test-secret"; // env later
 
-  if (existingUser) {
-    throw new Error("Email already exists");
+async function registerUser({ name, email, password }) {
+  if (!email || !password) {
+    throw { status: 400, message: "Missing fields" };
   }
 
-  return userRepository.createUser({ email, password });
-};
+  const existingUser = userRepository.findByEmail(email);
+  if (existingUser) {
+    throw { status: 400, message: "Email already exists" };
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  return userRepository.create({
+    name,
+    email,
+    password: hashedPassword,
+    role: "user",
+  });
+}
+
+async function loginUser({ email, password }) {
+  const user = userRepository.findByEmail(email);
+  if (!user) {
+    throw { status: 401, message: "Invalid credentials" };
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw { status: 401, message: "Invalid credentials" };
+  }
+
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
+  return token;
+}
 
 module.exports = {
-  register,
+  registerUser,
+  loginUser,
 };

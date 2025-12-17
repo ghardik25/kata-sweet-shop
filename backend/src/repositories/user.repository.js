@@ -1,10 +1,10 @@
 const users = [];
 
-const findByEmail = async (email) => {
+const findByEmail = (email) => {
   return users.find((user) => user.email === email);
 };
 
-const createUser = async (user) => {
+const create = (user) => {
   users.push(user);
   return user;
 };
@@ -15,6 +15,6 @@ const clearUsers = () => {
 
 module.exports = {
   findByEmail,
-  createUser,
+  create,
   clearUsers,
 };

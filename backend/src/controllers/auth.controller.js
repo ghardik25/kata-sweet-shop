@@ -1,24 +1,21 @@
-const { validateRegisterInput } = require("../validators/auth.validator");
 const authService = require("../services/auth.service");
 
-const registerUser = async (req, res) => {
-  const error = validateRegisterInput(req.body);
-
-  if (error) {
-    return res.status(400).json({ message: error });
-  }
-
+async function register(req, res) {
   try {
-    await authService.register(req.body);
-
-    return res.status(201).json({
-      message: "User registered successfully",
-    });
+    await authService.registerUser(req.body);
+    return res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(err.status || 500).json({ message: err.message });
   }
-};
+}
 
-module.exports = {
-  registerUser,
-};
+async function login(req, res) {
+  try {
+    const token = await authService.loginUser(req.body);
+    return res.status(200).json({ token });
+  } catch (err) {
+    return res.status(err.status || 500).json({ message: err.message });
+  }
+}
+
+module.exports = { register, login };
