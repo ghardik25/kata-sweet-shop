@@ -9,8 +9,8 @@ const JWT_SECRET = "test-secret";
 let token;
 
 beforeEach(async () => {
-  sweetsRepository.clear();
-  userRepository.clearUsers();
+  await sweetsRepository.clear();
+});
 
   // create user and token
   const user = userRepository.create({
@@ -21,7 +21,6 @@ beforeEach(async () => {
   });
 
   token = jwt.sign({ id: user.id, role: "admin" }, JWT_SECRET);
-});
 
 describe("SWEETS API", () => {
   it("should add a new sweet", async () => {

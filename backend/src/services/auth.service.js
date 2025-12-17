@@ -12,15 +12,15 @@ async function registerUser({ name, email, password }) {
   }
 
   // Prevent duplicate account
-  const existingUser = userRepository.findByEmail(email);
+  const existingUser = await userRepository.findByEmail(email);
   if (existingUser) {
     throw { status: 400, message: "Email already exists" };
   }
 
- // Hash password before persistence (security requirement)
+// Hash password before persistence (security requirement)
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  return userRepository.create({
+  return await userRepository.create({
     name,
     email,
     password: hashedPassword,
@@ -29,7 +29,7 @@ async function registerUser({ name, email, password }) {
 }
 
 async function loginUser({ email, password }) {
-  const user = userRepository.findByEmail(email);
+  const user = await userRepository.findByEmail(email);
   if (!user) {
     throw { status: 401, message: "Invalid credentials" };
   }
@@ -42,9 +42,8 @@ async function loginUser({ email, password }) {
 
   // Generate JWT for stateless authentication
   return jwt.sign(
-    { id: user.id, role: user.role },
-    JWT_SECRET,
-    { expiresIn: "1h" }
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET
   );
 }
 

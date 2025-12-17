@@ -1,18 +1,18 @@
-// In-memory repository used for fast testing and TDD.
-// Will connect to MongoDB without changing services.
-const users = [];
+const User = require("../models/User");
 
-const findByEmail = (email) => {
-  return users.find((user) => user.email === email);
+// Find user by email (used for auth)
+const findByEmail = async (email) => {
+  return await User.findOne({ email });
 };
 
-const create = (user) => {
-  users.push(user);
-  return user;
+// Create new user
+const create = async (user) => {
+  return await User.create(user);
 };
 
-const clearUsers = () => {
-  users.length = 0;
+// Used only by tests
+const clearUsers = async () => {
+  await User.deleteMany({});
 };
 
 module.exports = {

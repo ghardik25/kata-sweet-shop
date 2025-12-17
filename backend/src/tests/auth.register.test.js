@@ -2,8 +2,8 @@ const request = require("supertest");
 const app = require("../app");
 const userRepository = require("../repositories/user.repository");
 
-beforeEach(() => {
-  userRepository.clearUsers();
+beforeEach(async () => {
+  await userRepository.clearUsers();
 });
 
 describe("POST /api/auth/register", () => {

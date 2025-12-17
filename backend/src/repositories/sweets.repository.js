@@ -1,33 +1,38 @@
-// In-memory repository used for fast testing and TDD.
-// Will connect to MongoDB without changing services.
-let sweets = [];
-let idCounter = 1;
+const Sweet = require("../models/Sweet");
 
-const create = (sweet) => {
-  const newSweet = { id: idCounter++, ...sweet };
-  sweets.push(newSweet);
-  return newSweet;
+// Create sweet
+const create = async (sweet) => {
+  return await Sweet.create(sweet);
 };
 
-const findAll = () => sweets;
-
-const clear = () => {
-  sweets = [];
-  idCounter = 1;
+// List all sweets
+const findAll = async () => {
+  return await Sweet.find();
 };
 
-const findById = (id) => sweets.find((s) => s.id === Number(id));
+// Find sweet by id
+const findById = async (id) => {
+  return await Sweet.findById(id);
+};
 
-const updateQuantity = (id, quantity) => {
-  const sweet = findById(id);
-  if (sweet) sweet.quantity = quantity;
-  return sweet;
+// Update quantity explicitly (used in inventory tests)
+const updateQuantity = async (id, quantity) => {
+  return await Sweet.findByIdAndUpdate(
+    id,
+    { quantity },
+    { new: true }
+  );
+};
+
+// Used only by tests
+const clear = async () => {
+  await Sweet.deleteMany({});
 };
 
 module.exports = {
   create,
   findAll,
-  clear,
   findById,
-  updateQuantity
+  updateQuantity,
+  clear,
 };

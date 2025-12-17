@@ -1,29 +1,45 @@
-// Encapsulates business logic related to sweets.
-// Currently simple, but easily extensible (pricing rules, stock checks).
 const sweetsRepository = require("../repositories/sweets.repository");
 
-function addSweet(data) {
-  return sweetsRepository.create(data);
+// Add a new sweet
+async function addSweet(data) {
+  return await sweetsRepository.create(data);
 }
 
-function listSweets() {
-  return sweetsRepository.findAll();
+// List all sweets
+async function listSweets() {
+  return await sweetsRepository.findAll();
 }
 
-function purchaseSweet(id) {
-  const sweet = sweetsRepository.findById(id);
-  if (!sweet || sweet.quantity <= 0) {
+// Purchase a sweet (decrease quantity)
+async function purchaseSweet(id) {
+  const sweet = await sweetsRepository.findById(id);
+
+  if (!sweet) {
+    throw { status: 404, message: "Sweet not found" };
+  }
+
+  if (sweet.quantity <= 0) {
     throw { status: 400, message: "Out of stock" };
   }
+
   sweet.quantity -= 1;
-  return sweet;
+  await sweet.save();
 }
 
-function restockSweet(id, qty) {
-  const sweet = sweetsRepository.findById(id);
-  if (!sweet) throw { status: 404, message: "Not found" };
-  sweet.quantity += qty;
-  return sweet;
+// Restock a sweet
+async function restockSweet(id, quantity) {
+  const sweet = await sweetsRepository.findById(id);
+
+  if (!sweet) {
+    throw { status: 404, message: "Sweet not found" };
+  }
+
+  if (!quantity || quantity <= 0) {
+    throw { status: 400, message: "Invalid quantity" };
+  }
+
+  sweet.quantity += quantity;
+  await sweet.save();
 }
 
 module.exports = {
