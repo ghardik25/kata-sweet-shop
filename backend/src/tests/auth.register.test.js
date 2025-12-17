@@ -1,5 +1,10 @@
 const request = require("supertest");
 const app = require("../app");
+const userRepository = require("../repositories/user.repository");
+
+beforeEach(() => {
+  userRepository.clearUsers();
+});
 
 describe("POST /api/auth/register", () => {
   it("should register a new user and return 201", async () => {
