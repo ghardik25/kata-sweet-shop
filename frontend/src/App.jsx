@@ -6,6 +6,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
+  console.log("API URL:", import.meta.env.VITE_API_URL);
+  
   return (
     <BrowserRouter>
       <Routes>
