@@ -7,13 +7,17 @@ const userRepository = require("../repositories/user.repository");
 const JWT_SECRET = "test-secret"; // kept simple for kata/testing
 
 async function registerUser({ name, email, password }) {
-  // Prevent duplicate accounts
+  if (!email || !password) {
+    throw { status: 400, message: "Missing fields" };
+  }
+
+  // Prevent duplicate account
   const existingUser = userRepository.findByEmail(email);
   if (existingUser) {
     throw { status: 400, message: "Email already exists" };
   }
 
-  // Hash password before persistence (security requirement)
+ // Hash password before persistence (security requirement)
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return userRepository.create({

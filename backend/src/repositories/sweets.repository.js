@@ -16,8 +16,18 @@ const clear = () => {
   idCounter = 1;
 };
 
+const findById = (id) => sweets.find((s) => s.id === Number(id));
+
+const updateQuantity = (id, quantity) => {
+  const sweet = findById(id);
+  if (sweet) sweet.quantity = quantity;
+  return sweet;
+};
+
 module.exports = {
   create,
   findAll,
   clear,
+  findById,
+  updateQuantity
 };
